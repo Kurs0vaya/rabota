@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0f1419">
+  <meta name="description" content="Мобильный тренажёр слепой печати и синтаксиса для программистов">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+  <title>blindtype — слепая печать и синтаксис</title>
+</head>
+<body>
+<div class="app">
+
+  <div class="statusbar">
+    <span>blindtype // v1.0</span>
+    <span class="status-right">LOCAL MODE</span>
+  </div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">&gt;_</span>
+      <div>
+        <div class="title">СЛЕПАЯ ПЕЧАТЬ</div>
+        <div class="subtitle">синтаксис языков программирования</div>
+      </div>
+    </div>
+    <div class="streak" id="streakBadge" title="Дней подряд">
+      <span class="streak-label">СТРИК</span>
+      <span id="streakValue">0</span><span class="streak-unit"> дн.</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- ========== ГЛАВНАЯ ========== -->
+    <section class="page active" id="page-home">
+      <div class="panel goal-panel">
+        <div class="panel-kicker">ТРЕНИРОВКА ДНЯ</div>
+        <div class="goal-row">
+          <div class="goal-num"><span id="goalNow">0</span><small> / <span id="goalTarget">5</span> мин</small></div>
+          <div class="goal-label">ежедневная норма</div>
+        </div>
+        <div class="progress"><div class="progress-fill" id="goalBar"></div></div>
+      </div>
+
+      <div class="panel stat-row">
+        <div><span class="big" id="homeWpm">0</span><small>симв/мин</small></div>
+        <div><span class="big" id="homeAcc">0%</span><small>точность</small></div>
+        <div><span class="big" id="homeSessions">0</span><small>занятий</small></div>
+      </div>
+
+      <div class="section-label">ВЫБЕРИТЕ РЕЖИМ</div>
+
+      <button class="mode-btn" data-mode="syntax">
+        <span class="mode-num">01</span>
+        <span class="mode-text"><b>Синтаксис</b><small>Ключевые слова, скобки, операторы</small></span>
+        <span class="chevron">→</span>
+      </button>
+
+      <button class="mode-btn" data-mode="code">
+        <span class="mode-num">02</span>
+        <span class="mode-text"><b>Код целиком</b><small>Готовые фрагменты программ</small></span>
+        <span class="chevron">→</span>
+      </button>
+
+      <button class="mode-btn" data-mode="keys">
+        <span class="mode-num">03</span>
+        <span class="mode-text"><b>Клавиатура</b><small>Основная позиция и сложные клавиши</small></span>
+        <span class="chevron">→</span>
+      </button>
+    </section>
+
+    <!-- ========== ТРЕНИРОВКА ========== -->
+    <section class="page" id="page-train">
+      <div class="train-head">
+        <button class="icon-btn" id="btnBack">← НАЗАД</button>
+        <div class="train-meta"><span id="trainLang">Python</span> / <span id="trainLevel">Уровень 1</span></div>
+      </div>
+
+      <div class="hud">
+        <div><span id="hudWpm">0</span><small>симв/мин</small></div>
+        <div><span id="hudAcc">100%</span><small>точность</small></div>
+        <div><span id="hudTime">60</span><small>сек</small></div>
+      </div>
+
+      <div class="text-card" id="textCard">
+        <div class="text-caption">ЗАДАНИЕ</div>
+        <div class="text-view" id="textView"></div>
+        <div class="hint" id="hintLine"></div>
+      </div>
+
+      <div class="input-wrap">
+        <input id="typeInput" type="text" autocomplete="off" autocorrect="off"
+               autocapitalize="off" spellcheck="false" inputmode="text"
+               placeholder="Введите текст задания..." disabled>
+      </div>
+
+      <div class="train-actions">
+        <button class="btn-ghost" id="btnRestart">ЗАНОВО</button>
+        <button class="btn-ghost" id="btnSkip">ДРУГОЕ ЗАДАНИЕ</button>
+      </div>
+
+      <div class="keyboard-tip" id="keyboardTip">Таймер запускается с первого символа</div>
+    </section>
+
+    <!-- ========== СТАТИСТИКА ========== -->
+    <section class="page" id="page-stats">
+      <div class="section-label">СКОРОСТЬ ЗА ПОСЛЕДНИЕ 10 ЗАНЯТИЙ</div>
+      <div class="panel">
+        <canvas id="chart" width="600" height="260"></canvas>
+      </div>
+      <div class="section-label">СЛОЖНЫЕ СИМВОЛЫ</div>
+      <div class="panel">
+        <div id="problemKeys" class="chips">Нет данных — пройдите тренировку</div>
+      </div>
+      <div class="panel">
+        <button class="btn-ghost danger" id="btnReset">ОЧИСТИТЬ СТАТИСТИКУ</button>
+      </div>
+    </section>
+
+    <!-- ========== ДОСТИЖЕНИЯ ========== -->
+    <section class="page" id="page-achievements">
+      <div class="section-label">ДОСТИЖЕНИЯ</div>
+      <div id="achievementList"></div>
+    </section>
+
+    <!-- ========== НАСТРОЙКИ ========== -->
+    <section class="page" id="page-settings">
+      <div class="section-label">ЯЗЫК ПРОГРАММИРОВАНИЯ</div>
+      <div class="panel options" id="langOptions"></div>
+      <div class="section-label">УРОВЕНЬ СЛОЖНОСТИ</div>
+      <div class="panel options" id="levelOptions"></div>
+      <div class="section-label">ДЛИТЕЛЬНОСТЬ</div>
+      <div class="panel options" id="timeOptions"></div>
+      <div class="panel note">
+        Данные хранятся локально на этом устройстве. Приложение работает без сети.
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-page="home">ГЛАВНАЯ</button>
+    <button class="nav-item" data-page="stats">СТАТИСТИКА</button>
+    <button class="nav-item" data-page="achievements">ДОСТИЖЕНИЯ</button>
+    <button class="nav-item" data-page="settings">НАСТРОЙКИ</button>
+  </nav>
+
+</div>
+
+<!-- Результат занятия -->
+<div class="modal" id="resultModal">
+  <div class="modal-box">
+    <div class="result-mark" id="resultMark">&gt; ГОТОВО</div>
+    <h2>ЗАНЯТИЕ ЗАВЕРШЕНО</h2>
+    <div class="result-grid">
+      <div><span id="resWpm">0</span><small>симв/мин</small></div>
+      <div><span id="resAcc">0%</span><small>точность</small></div>
+      <div><span id="resTime">0</span><small>секунд</small></div>
+    </div>
+    <div class="result-note" id="resultNote"></div>
+    <button class="btn-primary" id="btnResultOk">ПРОДОЛЖИТЬ</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
